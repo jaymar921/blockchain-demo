@@ -12,7 +12,7 @@ export async function GenerateKey(){
     const keyPair = await window.crypto.subtle.generateKey(
         {
             name: "RSASSA-PKCS1-v1_5",
-            modulusLength: 4096,
+            modulusLength: 2048,
             publicExponent: new Uint8Array([0x01, 0x00, 0x01]), // Equivalent to 65537
             hash: { name: "SHA-256" }, // Use SHA-256 hash algorithm
         },
@@ -25,7 +25,7 @@ export async function GenerateKey(){
 
     // Export private key
     const privateKey = await window.crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
-    return {publicKey, privateKey}
+    return {publicKey:keyPair.publicKey, privateKey:keyPair.privateKey}
 }
 
 export async function Sign(privateKey, data){

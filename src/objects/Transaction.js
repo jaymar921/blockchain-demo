@@ -15,16 +15,15 @@ export class Transaction{
         this.signature = "";
     }
 
-    sign(privateKey){
+    async sign(privateKey){
         const data = {
             amount: this.amount,
             from: this.from,
             to: this.to,
             timestamp: this.timestamp
         }
-        Sign(privateKey, data).then((s) => {
-            this.signature = s;
-        });
+        let sign = await Sign(privateKey, data);
+        this.signature = sign;
     }
 
     async verify(publicKey){
