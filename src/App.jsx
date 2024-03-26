@@ -41,7 +41,7 @@ function App() {
                   <p>ID: {block.ID}</p>
                   <p>Nonce: {block.GetNonce()}</p>
                   <p>Transactions: {block.GetTransactions().map((t, i) => {
-                    return <p key={i}>{t}</p>
+                    return <div key={i}>{t}</div>
                   })}</p>
                   <p>PrevHash: {block.GetPreviousHash()}</p>
                   <p>Hash: {block.GetHash()}</p>

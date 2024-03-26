@@ -1,4 +1,5 @@
 import { Block } from "./Block";
+import { MineBlock } from "./MineBlock";
 
 export class BlockChain{
     /**
@@ -6,6 +7,14 @@ export class BlockChain{
      */
     constructor(blocks = []){
         this.blocks = blocks;
+        this.AddGenesisBlock();
+    }
+
+    AddGenesisBlock(){
+        let genesisBlock = new Block()
+        genesisBlock.SetPreviousHash("0000000000000000000000000000000000000000000000000000000000000000");
+        MineBlock(genesisBlock)
+        this.blocks.push(genesisBlock);
     }
 
     /**
@@ -14,12 +23,8 @@ export class BlockChain{
     AddBlock(block){
         let lastBlock = undefined;
         block.ID = this.blocks.length+1;
-        if(this.blocks.length > 0){
-            lastBlock = this.blocks[this.blocks.length - 1]
-            block.SetPreviousHash(lastBlock.GetHash());
-        }else{
-            block.SetPreviousHash("0000000000000000000000000000000000000000000000000000000000000000");
-        }
+        lastBlock = this.blocks[this.blocks.length - 1]
+        block.SetPreviousHash(lastBlock.GetHash());
         this.blocks.push(block);
     }
 
@@ -33,8 +38,6 @@ export class BlockChain{
                 const earlyBlock = this.blocks[i - 1];
                 const lastBlock = this.blocks[i];
                 lastBlock.SetPreviousHash(earlyBlock.GetHash());
-            }else{
-                this.blocks[i].SetPreviousHash("0000000000000000000000000000000000000000000000000000000000000000")
             }
         }
     }

@@ -6,7 +6,7 @@ import { sha256HashObject } from "./Cryptography"
  * @param {Number} NofOs Number 0's in the first string of hash
  * @returns {Block} Mined block
  */
-export async function MineBlock(_block, NofOs = 4){
+export async function MineBlock(_block, NofOs = 2){
     let numberOf0s_string = ""
     for(let i = 0; i < NofOs; i++){
         numberOf0s_string += "0";
