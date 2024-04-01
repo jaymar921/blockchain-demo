@@ -9,7 +9,7 @@ import { getRandomIntInclusive } from "./utility";
 export const InitializeBlockChain = async () => {
     await InitializeUsers();
     const blockchain = new BlockChain();
-    blockchain.difficulty = 2;
+    blockchain.difficulty = 3;
     blockchain.blockTransactionSize = 10;
     await blockchain.AddGenesisBlock();
 
@@ -20,7 +20,7 @@ export const InitializeBlockChain = async () => {
     await blockchain.addTransaction(transaction_1);
 
 
-    SimulateCirculation(blockchain, JaymarJHCWalletAddress)
+    await SimulateCirculation(blockchain, JaymarJHCWalletAddress)
 }
 
 /**
@@ -30,7 +30,7 @@ export const InitializeBlockChain = async () => {
  */
 const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress) => {
     const users = await InitializeUsers(); // load users
-    let limit = 1000
+    let limit = 10
     
     // circulation
     await SendCryptoCurrency(blockchain, JaymarJHCWalletAddress, users[1].WalletAddress, 50);
