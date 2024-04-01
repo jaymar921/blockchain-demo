@@ -27,33 +27,33 @@ const Account = () => {
             <div className="border w-[350px] md:w-[450px] absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] font-minecraft">
                 <h1 className="text-center text-[2rem] mt-8">Account</h1>
                 <div className="px-8 m-2">
-                    <p className="text-[1rem]">Balance</p>
-                    <p className="text-[1rem] border p-2 rounded-md text-center text-slate-400 relative">&#8369; {formatNumberToCurrency(LoggedInAccount.User.WalletBalance)} <a className="absolute right-2 text-[#Ffad00] text-[1.2rem] hover:cursor-pointer" href="/topup"><i className="fa-regular fa-square-plus"></i></a></p>
+                    <p className="text-[0.7rem] sm:text-[1rem]">Balance</p>
+                    <p className="text-[0.7rem] sm:text-[1rem] border p-2 rounded-md text-center text-slate-400 relative">&#8369; {formatNumberToCurrency(LoggedInAccount.User.WalletBalance)} <a className="absolute right-2 text-[#Ffad00] text-[0.8rem] sm:text-[1.2rem] hover:cursor-pointer" href="/topup"><i className="fa-regular fa-square-plus"></i></a></p>
                 </div>
                 <div className="px-8 m-2">
-                    <p className="text-[1rem]">Fullname</p>
-                    <p className="text-[1rem] border p-2 rounded-md text-center text-slate-400">{LoggedInAccount.Fullname}</p>
+                    <p className="text-[0.7rem] sm:text-[1rem]">Fullname</p>
+                    <p className="text-[0.7rem] sm:text-[1rem] border p-2 rounded-md text-center text-slate-400">{LoggedInAccount.Fullname}</p>
                 </div>
                 <div className="px-8 m-2">
-                    <p className="text-[1rem]">Username</p>
-                    <p className="text-[1rem] border p-2 rounded-md text-center text-slate-400">{LoggedInAccount.Username}</p>
+                    <p className="text-[0.7rem] sm:text-[1rem]">Username</p>
+                    <p className="text-[0.7rem] sm:text-[1rem] border p-2 rounded-md text-center text-slate-400">{LoggedInAccount.Username}</p>
                 </div>
                 <div className="px-8 m-2">
-                    <p className="text-[1rem]">Wallet Address <a className="hover:cursor-pointer" onClick={() => Clipboard("WalletAddress")}><i className="fa-solid fa-copy"></i></a></p>
+                    <p className="text-[0.7rem] sm:text-[1rem]">Wallet Address <a className="hover:cursor-pointer" onClick={() => Clipboard("WalletAddress")}><i className="fa-solid fa-copy"></i></a></p>
                     <div className="">
-                        <p className="text-[1rem] border p-2 rounded-md text-center text-slate-400 truncate " title={LoggedInAccount.WalletAddress}>{LoggedInAccount.WalletAddress}</p>
+                        <p className="text-[0.7rem] sm:text-[1rem] border p-2 rounded-md text-center text-slate-400 truncate " title={LoggedInAccount.WalletAddress}>{LoggedInAccount.WalletAddress}</p>
                     </div>
                 </div>
                 <div className="px-8 m-2">
-                    <p className="text-[1rem]">Private Key <a className="hover:cursor-pointer" onClick={() => Clipboard("PrivateKey")}><i className="fa-solid fa-copy"></i></a></p>
+                    <p className="text-[0.7rem] sm:text-[1rem]">Private Key <a className="hover:cursor-pointer" onClick={() => Clipboard("PrivateKey")}><i className="fa-solid fa-copy"></i></a></p>
                     <div className="">
-                        <p className="text-[1rem] border p-2 rounded-md text-center text-slate-400 truncate " title={LoggedInAccount.User.PrivateKey}>{LoggedInAccount.User.PrivateKey}</p>
+                        <p className="text-[0.7rem] sm:text-[1rem] border p-2 rounded-md text-center text-slate-400 truncate " title={LoggedInAccount.User.PrivateKey}>{LoggedInAccount.User.PrivateKey}</p>
                     </div>
                 </div>
                 <div className="px-8 m-2">
-                    <p className="text-[1rem]">Public Key <a className="hover:cursor-pointer" onClick={() => Clipboard("PublicKey")}><i className="fa-solid fa-copy"></i></a></p>
+                    <p className="text-[0.7rem] sm:text-[1rem]">Public Key <a className="hover:cursor-pointer" onClick={() => Clipboard("PublicKey")}><i className="fa-solid fa-copy"></i></a></p>
                     <div className="">
-                        <p className="text-[1rem] border p-2 rounded-md text-center text-slate-400 truncate " title={LoggedInAccount.User.PublicKey}>{LoggedInAccount.User.PublicKey}</p>
+                        <p className="text-[0.7rem] sm:text-[1rem] border p-2 rounded-md text-center text-slate-400 truncate " title={LoggedInAccount.User.PublicKey}>{LoggedInAccount.User.PublicKey}</p>
                     </div>
                 </div>
                 <div className="px-8 m-8 text-center">
