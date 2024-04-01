@@ -1,4 +1,3 @@
-import React from 'react'
 import { jh_logo } from '../assets'
 import { Footer } from '../components'
 

@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import { Home } from './pages';
+import { Home, Login, Register, Account as AccountPage } from './pages';
 import { Navbar } from './components';
 import "./App.css";
 
@@ -10,6 +10,9 @@ const App = () => {
             <Navbar />
             <Routes>
                 <Route path='/' element={<Home />}/>
+                <Route path='/login' element={<Login />}/>
+                <Route path='/register' element={<Register />}/>
+                <Route path='/account' element={<AccountPage />}/>
             </Routes>
         </Router>
     </main>

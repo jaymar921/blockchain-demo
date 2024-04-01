@@ -7,6 +7,15 @@ export async function sha256HashObject(obj) {
     return hashHex;
 }
 
+async function exportKeyAsHex(key, type) {
+    const exportedKey = await window.crypto.subtle.exportKey(type, key);
+    const exportedKeyArray = new Uint8Array(exportedKey);
+    const exportedKeyHex = Array.from(exportedKeyArray)
+        .map(b => b.toString(16).padStart(2, '0'))
+        .join('');
+    return exportedKeyHex;
+}
+
 export async function GenerateKey(){
     // Generate RSA key pair
     const keyPair = await window.crypto.subtle.generateKey(
@@ -21,31 +30,62 @@ export async function GenerateKey(){
     );
 
     // Export public key
-    const publicKey = await window.crypto.subtle.exportKey("spki", keyPair.publicKey);
+    const publicKey = await exportKeyAsHex(keyPair.publicKey, 'spki');
 
     // Export private key
-    const privateKey = await window.crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
-    return {publicKey:keyPair.publicKey, privateKey:keyPair.privateKey}
+    const privateKey = await exportKeyAsHex(keyPair.privateKey, 'pkcs8');
+
+    return {publicKey, privateKey}
 }
 
-export async function Sign(privateKey, data){
+async function importPrivateKey(privateKeyHex) {
+    const privateKeyArray = Uint8Array.from(new TextEncoder().encode(privateKeyHex));
+    const importedPrivateKey = await window.crypto.subtle.importKey(
+        'pkcs8',
+        privateKeyArray,
+        {
+            name: "RSASSA-PKCS1-v1_5",
+            hash: { name: "SHA-256" },
+        },
+        true,
+        ['sign']
+    );
+    return importedPrivateKey;
+}
+
+async function importPublicKey(publicKeyHex) {
+    const publicKeyArray = Uint8Array.from(new TextEncoder().encode(publicKeyHex));
+    const importedPublicKey = await window.crypto.subtle.importKey(
+        'spki',
+        publicKeyArray,
+        {
+            name: "RSASSA-PKCS1-v1_5",
+            hash: { name: "SHA-256" },
+        },
+        true,
+        ['verify']
+    );
+    return importedPublicKey;
+}
+
+export async function Sign(privateKeyHex, data){
     const signature = await window.crypto.subtle.sign(
         {
             name: "RSASSA-PKCS1-v1_5",
         },
-        privateKey,
+        await importPrivateKey(privateKeyHex),
         new TextEncoder().encode(data)
     );
 
     return signature;
 }
 
-export async function VerifySignature(publicKey, data, signature){
+export async function VerifySignature(publicKeyHex, data, signature){
     const isValid = await window.crypto.subtle.verify(
         {
             name: "RSASSA-PKCS1-v1_5",
         },
-        publicKey,
+        await importPublicKey(publicKeyHex),
         signature,
         new TextEncoder().encode(data)
     );
