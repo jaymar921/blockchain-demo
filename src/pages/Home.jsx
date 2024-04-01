@@ -1,7 +1,12 @@
+import { useEffect } from 'react'
 import { jh_logo } from '../assets'
 import { Footer } from '../components'
+import { InitializeBlockChain } from '../utilities/cryptocurrency'
 
 const Home = () => {
+    useEffect(()=> {
+        InitializeBlockChain();
+    },[])
   return (
     <div>
         <section className='relative flex lg:flex-row flex-col max-container h-[100lvh]'>

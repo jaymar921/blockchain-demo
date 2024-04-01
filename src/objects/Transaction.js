@@ -33,6 +33,6 @@ export class Transaction{
             to: this.to,
             timestamp: this.timestamp
         }
-        return await VerifySignature(publicKey, data);
+        return await VerifySignature(publicKey, data, this.signature);
     }
 }

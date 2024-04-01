@@ -16,6 +16,6 @@ export class User{
         const keys = await GenerateKey();
         this.PrivateKey = keys.privateKey;
         this.PublicKey = keys.publicKey;
-        this.WalletAddress = await sha256HashObject(Math.random * 99999);
+        this.WalletAddress = await sha256HashObject(Math.random * 99999 + this.Fullname);
     }
 }

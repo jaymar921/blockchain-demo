@@ -1,3 +1,5 @@
+import { arrayBufferToHexString, hexStringToArrayBuffer, hexToSignatureArrayBuffer } from "../utilities/utility";
+
 export async function sha256HashObject(obj) {
     const jsonString = JSON.stringify(obj);
     const buffer = new TextEncoder().encode(jsonString);
@@ -39,45 +41,61 @@ export async function GenerateKey(){
 }
 
 async function importPrivateKey(privateKeyHex) {
-    const privateKeyArray = Uint8Array.from(new TextEncoder().encode(privateKeyHex));
-    const importedPrivateKey = await window.crypto.subtle.importKey(
-        'pkcs8',
-        privateKeyArray,
-        {
-            name: "RSASSA-PKCS1-v1_5",
-            hash: { name: "SHA-256" },
-        },
-        true,
-        ['sign']
-    );
-    return importedPrivateKey;
+    const privateKeyArray = new Uint8Array(hexStringToArrayBuffer(privateKeyHex));
+    
+    try {
+        // Import the private key
+        const importedPrivateKey = await window.crypto.subtle.importKey(
+            'pkcs8',
+            privateKeyArray,
+            {
+                name: "RSASSA-PKCS1-v1_5",
+                hash: { name: "SHA-256" },
+            },
+            true,
+            ['sign']
+        );
+        return importedPrivateKey;
+    } catch (error) {
+        console.error("Error importing private key:", error);
+        throw error; // Rethrow the error for handling by the caller
+    }
 }
 
+
 async function importPublicKey(publicKeyHex) {
-    const publicKeyArray = Uint8Array.from(new TextEncoder().encode(publicKeyHex));
-    const importedPublicKey = await window.crypto.subtle.importKey(
-        'spki',
-        publicKeyArray,
-        {
-            name: "RSASSA-PKCS1-v1_5",
-            hash: { name: "SHA-256" },
-        },
-        true,
-        ['verify']
-    );
-    return importedPublicKey;
+    const publicKeyArray = new Uint8Array(hexStringToArrayBuffer(publicKeyHex));
+    
+    try {
+        // Import the public key
+        const importedPublicKey = await window.crypto.subtle.importKey(
+            'spki',
+            publicKeyArray,
+            {
+                name: "RSASSA-PKCS1-v1_5",
+                hash: { name: "SHA-256" },
+            },
+            true,
+            ['verify']
+        );
+        return importedPublicKey;
+    } catch (error) {
+        console.error("Error importing public key:", error);
+        throw error; // Rethrow the error for handling by the caller
+    }
 }
 
 export async function Sign(privateKeyHex, data){
+    const key = await importPrivateKey(privateKeyHex)
     const signature = await window.crypto.subtle.sign(
         {
             name: "RSASSA-PKCS1-v1_5",
         },
-        await importPrivateKey(privateKeyHex),
+        key,
         new TextEncoder().encode(data)
     );
-
-    return signature;
+    const signatureHex = arrayBufferToHexString(signature);
+    return signatureHex;
 }
 
 export async function VerifySignature(publicKeyHex, data, signature){
@@ -86,9 +104,24 @@ export async function VerifySignature(publicKeyHex, data, signature){
             name: "RSASSA-PKCS1-v1_5",
         },
         await importPublicKey(publicKeyHex),
-        signature,
+        hexStringToArrayBuffer(signature), // Convert signature ArrayBuffer to hexadecimal string
         new TextEncoder().encode(data)
     );
 
     return isValid;
+}
+export async function Verify(publicKeyHex, data, signatureHex) {
+    const key = await importPublicKey(publicKeyHex);
+    const signatureArrayBuffer = await hexToSignatureArrayBuffer(signatureHex);
+
+    const result = await window.crypto.subtle.verify(
+        {
+            name: "RSASSA-PKCS1-v1_5",
+        },
+        key,
+        signatureArrayBuffer,
+        new TextEncoder().encode(data)
+    );
+
+    return result;
 }
