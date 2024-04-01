@@ -1,6 +1,7 @@
 import { Footer } from "../components";
 import useAccount from "../hooks/useAccount"
 import { LogoutLocal } from "../utilities/accounthandler";
+import { formatNumberToCurrency } from "../utilities/utility";
 
 const Account = () => {
     const LoggedInAccount = useAccount()
@@ -27,7 +28,7 @@ const Account = () => {
                 <h1 className="text-center text-[2rem] mt-8">Account</h1>
                 <div className="px-8 m-2">
                     <p className="text-[1rem]">Balance</p>
-                    <p className="text-[1rem] border p-2 rounded-md text-center text-slate-400 relative">{LoggedInAccount.User.WalletBalance} <a className="absolute right-2 text-[#Ffad00] text-[1.2rem] hover:cursor-pointer" href="/topup"><i className="fa-regular fa-square-plus"></i></a></p>
+                    <p className="text-[1rem] border p-2 rounded-md text-center text-slate-400 relative">&#8369; {formatNumberToCurrency(LoggedInAccount.User.WalletBalance)} <a className="absolute right-2 text-[#Ffad00] text-[1.2rem] hover:cursor-pointer" href="/topup"><i className="fa-regular fa-square-plus"></i></a></p>
                 </div>
                 <div className="px-8 m-2">
                     <p className="text-[1rem]">Fullname</p>
