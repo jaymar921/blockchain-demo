@@ -117,6 +117,7 @@ export const loadBlockchain = async (difficulty, blockTransactionSize, forceLoad
     blockchain.difficulty = difficulty ?? data.difficulty;
     blockchain.blockTransactionSize = blockTransactionSize ?? data.blockTransactionSize;
     blockchain.tempTransactions = [];
+    blockchain.pendingBlocks = [];
     blockchain.isMining = data.isMining;
 
     if(!suppressLogs)
@@ -136,6 +137,23 @@ export const loadBlockchain = async (difficulty, blockTransactionSize, forceLoad
         }
         blockchain.blocks.push(bk);
     }
+
+    for(const block of data.pendingBlocks){
+        const bk = new Block();
+        bk.ID = block.ID;
+        bk.Nonce = block.Nonce;
+        bk.Hash = block.Hash;
+        bk.PreviousHash = block.PreviousHash;
+
+        for(const tr of block.Transactions){
+            const transaction = new Transaction(tr.amount, tr.from, tr.to);
+            transaction.timestamp = tr.timestamp;
+            transaction.signature = tr.signature;
+            bk.AddTransaction(transaction);
+        }
+        blockchain.pendingBlocks.push(bk);
+    }
+
 
     if(!suppressLogs)
         console.log("copying transactions")

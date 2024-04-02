@@ -9,6 +9,7 @@ export class BlockChain{
      */
     constructor(blocks = []){
         this.blocks = blocks;
+        this.pendingBlocks = []
         //this.AddGenesisBlock();
         this.tempTransactions = [];
         this.difficulty = 5;
@@ -18,7 +19,6 @@ export class BlockChain{
 
     async AddGenesisBlock(){
         if(this.isMining) return;
-        console.log(this.isMining)
         this.isMining = true;
         let genesisBlock = new Block(1)
         notifications.show({
@@ -32,6 +32,7 @@ export class BlockChain{
                 notifications.show({
                     title: "Mining Block [System]",
                     message: `Block #${genesisBlock.ID} was mined`,
+                    color: "orange"
                 })
             }
         })
@@ -51,6 +52,10 @@ export class BlockChain{
 
     GetLastBlock(){
         return this.blocks[this.blocks.length - 1];
+    }
+
+    GetBlockById(ID){
+        return this.blocks.filter(b => b.ID === ID)[0];
     }
 
     GetBlock(hash){
@@ -83,9 +88,7 @@ export class BlockChain{
         this.tempTransactions.push(transaction);
     }
 
-    async createBlock(){
-        if(this.isMining) return;
-        const block = new Block();
+    async createBlock(block = new Block()){
         block.ID = this.blocks.length+1;
         for(const transaction of this.tempTransactions){
             block.AddTransaction(transaction);
@@ -98,7 +101,40 @@ export class BlockChain{
         notifications.show({
             title: "Mining Block [System]",
             message: `Mining Block #${block.ID}`,
+            color: "orange"
         })
+        
+        this.blocks.push(block);
+        if(this.isMining) {
+            this.pendingBlocks.push(block)
+            const pendingBlockToMine = this.pendingBlocks.shift();
+            const cancelId = setInterval(()=> {
+                if(this.isMining) return;
+                if(!pendingBlockToMine) return;
+                const previousBlockMined = this.GetBlockById(pendingBlockToMine.ID - 1);
+                if(!previousBlockMined) return;
+                if(!previousBlockMined.GetHash()) return;
+                pendingBlockToMine.SetPreviousHash(previousBlockMined.GetHash());
+                notifications.show({
+                    title: "Mining Block [System]",
+                    message: `Mining Block #${pendingBlockToMine.ID}`,
+                    color: "orange"
+                })
+                MineBlock(pendingBlockToMine, this.difficulty).then(()=>{
+                    this.isMining = false;
+                    if(!this.isMining){
+                        notifications.show({
+                            title: "Mining Block [System]",
+                            message: `Block #${pendingBlockToMine.ID} was mined`,
+                            color: "orange"
+                        })
+                    }
+                })
+                clearInterval(cancelId);
+            }, [1000])
+            return;
+        }
+
         // Mine the block
         this.isMining = true;
         MineBlock(block, this.difficulty).then(()=>{
@@ -107,11 +143,11 @@ export class BlockChain{
                 notifications.show({
                     title: "Mining Block [System]",
                     message: `Block #${block.ID} was mined`,
+                    color: "orange"
                 })
             }
         })
         // push the block into the blockchain
-        this.blocks.push(block);
     }
 
     getBalance(WalletAddress){

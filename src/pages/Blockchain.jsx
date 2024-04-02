@@ -3,6 +3,7 @@ import { Footer } from "../components";
 import useAccount from "../hooks/useAccount";
 import useBlockchain from "../hooks/useBlockchain"
 import { getAccountByWalletAddress } from "../utilities/datahandler";
+import { IsMobile } from "../utilities/utility";
 
 const Blockchain = () => {
     const blockchain = useBlockchain();
@@ -14,9 +15,9 @@ const Blockchain = () => {
      * @param {Block} block 
      */
     const ValidBlock = (block) => {
-        if(!new String(block.GetHash()).startsWith("00"))
+        if(!new String(block.GetHash()).startsWith(IsMobile()?"00":"0000"))
             return false;
-        if(!new String(block.GetPreviousHash()).startsWith("00"))
+        if(!new String(block.GetPreviousHash()).startsWith(IsMobile()?"00":"0000"))
             return false;
         if((!blockchain.GetBlock(block.GetPreviousHash()) && !block.ID === 1))
             return false;
@@ -60,7 +61,7 @@ const Blockchain = () => {
                     </div>
                 </div>
                 <h1 className="text-center text-[1.2rem] md:text-[2rem] mt-2">Blockchain <span title="Total number of blocks in the blockchain">[{blockchain.blocks.length}]</span></h1>
-                <p className="text-center text-blue-200">Each block contains 5 transactions except for the <a className="text-yellow-400">Genesis Block</a>. To verify the block, the hash should start with three zeros &quot;000&quot; which means it&apos;s already been mined.</p>
+                <p className="text-center text-blue-200">Each block contains 5 transactions except for the <a className="text-yellow-400">Genesis Block</a>. To verify the block, the hash should start with {IsMobile()?<>two zeros &quot;00&quot;</> : <>four zeros &quot;0000&quot;</>} which means it&apos;s already been mined.</p>
                 <hr className="mt-2" />
                 <div className="overflow-y-scroll h-[500px]">
                     {

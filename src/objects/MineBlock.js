@@ -16,7 +16,7 @@ export async function MineBlock(_block, NofOs = 3){
     let nonce = 1;
 
     let hash = await sha256HashObject(_block);
-    while(!hash.startsWith(numberOf0s_string)){
+    while(!hash.startsWith(numberOf0s_string) && _block.PreviousHash.startsWith(numberOf0s_string)){
         _block.SetNonce(nonce++);
         hash = await sha256HashObject(_block);
         _block.SetHash(hash)

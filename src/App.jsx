@@ -6,12 +6,13 @@ import '@mantine/notifications/styles.css';
 import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
+import { IsMobile } from "./utilities/utility";
 
 const App = () => {
   return (
     
     <MantineProvider defaultColorScheme='dark'>
-      <Notifications position="bottom-left" zIndex={1000} className="absolute font-minecraft text-[0.7rem]" limit={5} autoClose={5000}/>
+      <Notifications position={IsMobile()?"top-center": "bottom-left"} zIndex={1000} className="absolute font-minecraft text-[0.7rem]" limit={IsMobile()?2:4} autoClose={IsMobile()?1000:5000}/>
       <main>
             <Router>
                 <Navbar />

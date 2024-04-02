@@ -1,18 +1,17 @@
 import { notifications } from "@mantine/notifications";
 import { Account } from "../classes/Account";
-import { BlockChain } from "../objects/BlockChain"
 import { sha256HashObject } from "../objects/Cryptography";
 import { Transaction } from "../objects/Transaction";
 import { User } from "../objects/User";
 import { BlockchainLocked, GetPendingTransaction, LoadUsers, LockBlockchain, SendPendingTransaction, getAccountByUsername, getAccountByWalletAddress, loadBlockchain, saveAccount, saveBlockchain } from "./datahandler";
-import { getRandomIntInclusive } from "./utility";
+import { IsMobile, getRandomIntInclusive } from "./utility";
 
 export const InitializeBlockChain = async (start = false) => {
     if(start){
         localStorage.removeItem("_blockchain")
         console.log("Initializing Blockchain")
         await InitializeUsers();
-        const blockchain = await loadBlockchain(4, 5, true);
+        const blockchain = await loadBlockchain(IsMobile()?2:4, 5, true);
         if(blockchain.GetLastBlock().ID === 1){
             // first transaction, we give 1000JHC Token to "Jaymar-JHC"
             const JaymarJHCWalletAddress = getAccountByUsername("jaymar921-JHC").WalletAddress;
@@ -104,7 +103,7 @@ const SimulateCirculation = async (blockchain, limit = 10) => {
         saveBlockchain(blockchain)
         if(BlockchainLocked())
             LockBlockchain(false)
-    }, 1000);
+    }, IsMobile()?3000:1000);
 }
 
 
@@ -201,7 +200,7 @@ export const SendCryptoCurrency = async (blockchain, fromWalletAddress, toWallet
     let senderBalance = blockchain.getBalance(fromWalletAddress);
     const loggedInUser = JSON.parse(localStorage.getItem("_account_loggedIn"));
 
-    if(senderBalance <= amount){
+    if(senderBalance < amount){
         if(showWarning)
             alert(`Sender has insufficient fund`)
         return false;
