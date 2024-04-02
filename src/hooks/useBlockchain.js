@@ -7,7 +7,7 @@ const useBlockchain = () => {
     setInterval(async ()=> {
         const blockchaindata = await loadBlockchain(2, 5, true);
         setBlockchain(blockchaindata)
-    }, 500)
+    }, 1000)
 
     return blockchain;
 }

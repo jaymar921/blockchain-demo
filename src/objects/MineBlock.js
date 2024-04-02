@@ -7,7 +7,7 @@ import { sha256HashObject } from "./Cryptography"
  * @returns {Block} Mined block
  */
 export async function MineBlock(_block, NofOs = 3){
-    console.log("Mining Block#: "+_block.ID)
+    //console.log("Mining Block#: "+_block.ID)
     let numberOf0s_string = ""
     for(let i = 0; i < NofOs; i++){
         numberOf0s_string += "0";
@@ -21,6 +21,6 @@ export async function MineBlock(_block, NofOs = 3){
         hash = await sha256HashObject(_block);
         _block.SetHash(hash)
     }
-    console.log("Done Mining Block#: "+_block.ID + " | Hash: "+hash)
+    //console.log("Done Mining Block#: "+_block.ID + " | Hash: "+hash)
     return _block;
 }

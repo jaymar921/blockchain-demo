@@ -6,19 +6,24 @@ import { User } from "../objects/User";
 import { getAccountByUsername, getAccountByWalletAddress, loadBlockchain, saveAccount, saveBlockchain } from "./datahandler";
 import { getRandomIntInclusive } from "./utility";
 
-export const InitializeBlockChain = async () => {
-    await InitializeUsers();
-    const blockchain = await loadBlockchain(2, 5);
-    if(blockchain.GetLastBlock().ID === 1){
+export const InitializeBlockChain = async (start = false) => {
+    if(start){
+        localStorage.clear()
+        console.log("Initializing Blockchain")
+        await InitializeUsers();
+        const blockchain = await loadBlockchain(2, 5);
+        if(blockchain.GetLastBlock().ID === 1){
 
-        // first transaction, we give 1000JHC Token to "Jaymar-JHC"
-        const JaymarJHCWalletAddress = getAccountByUsername("jaymar921-JHC").WalletAddress;
-        const transaction_1 = new Transaction(1000, "", JaymarJHCWalletAddress);
-    
-        await blockchain.addTransaction(transaction_1);
-    
-        console.log("simulate transactions")
-        await SimulateCirculation(blockchain, JaymarJHCWalletAddress)
+            // first transaction, we give 1000JHC Token to "Jaymar-JHC"
+            const JaymarJHCWalletAddress = getAccountByUsername("jaymar921-JHC").WalletAddress;
+            const transaction_1 = new Transaction(1000, "", JaymarJHCWalletAddress);
+        
+            await blockchain.addTransaction(transaction_1);
+        
+            console.log("simulate transactions")
+        }
+        
+        await SimulateCirculation(blockchain, getAccountByUsername("jaymar921-JHC").WalletAddress, 1000)
     }
 }
 
@@ -27,9 +32,8 @@ export const InitializeBlockChain = async () => {
  * @param {BlockChain} blockchain 
  * @param {String} JaymarJHCWalletAddress 
  */
-const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress) => {
+const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 10) => {
     const users = await InitializeUsers(); // load users
-    let limit = 10
     
     // circulation
     // await SendCryptoCurrency(blockchain, JaymarJHCWalletAddress, users[1].WalletAddress, 50);
@@ -45,10 +49,10 @@ const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress) => {
         // do transaction every second, circulate the balance
         let userWalletAddress = JaymarJHCWalletAddress;
         let user2WalletAddress = JaymarJHCWalletAddress;
-        if(Math.random() <= 0.8){
+        if(Math.random() <= 0.6){
             userWalletAddress = users[getRandomIntInclusive(0, users.length-1)].WalletAddress;
         }
-        if(Math.random() <= 0.8){
+        if(Math.random() <= 0.6){
             user2WalletAddress = users[getRandomIntInclusive(0, users.length-1)].WalletAddress;
         }
 
@@ -60,7 +64,7 @@ const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress) => {
 
         // save block chain
         saveBlockchain(blockchain)
-    }, 50);
+    }, 2000);
 
 }
 
