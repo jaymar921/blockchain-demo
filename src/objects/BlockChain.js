@@ -20,8 +20,11 @@ export class BlockChain{
         if(this.isMining) return;
         console.log(this.isMining)
         this.isMining = true;
-        console.log("Add genesis")
         let genesisBlock = new Block(1)
+        notifications.show({
+            title: "Mining Block [System]",
+            message: `Mining Block #1 [Genesis Block]`,
+        })
         genesisBlock.SetPreviousHash("0000000000000000000000000000000000000000000000000000000000000000");
         MineBlock(genesisBlock, this.difficulty).then(() => {
             this.isMining = false;

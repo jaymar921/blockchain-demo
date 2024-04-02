@@ -26,7 +26,7 @@ const Blockchain = () => {
             <div className="h-[100%] p-2">
                 <div className="px-2 mb-2">
                     <h1 className="text-center text-[1.2rem] md:text-[2rem] mt-2">Temporary Transactions</h1>
-                    <p className="text-center text-blue-200">These transactions aren&apos;t stored in a block yet and haven&apos;t been mined yet.</p>
+                    <p className="text-center text-blue-200">These transactions aren&apos;t stored in a block yet.</p>
                     <div className="h-[158px]">
                         <table className="table-fixed w-[100%] border">
                             <thead className="text-[0.8rem] md:text-[1rem]">
@@ -50,14 +50,15 @@ const Blockchain = () => {
                         </table>
                     </div>
                 </div>
-                <h1 className="text-center text-[1.2rem] md:text-[2rem] mt-2">Block chain</h1>
-                <p className="text-center text-blue-200">Each block contains 5 transactions except for the <a className="text-yellow-400">Genesis Block</a>. To verify the block, the hash should start with two zeros &quot;00&quot; which means it&apos;s already been mined.</p>
+                <h1 className="text-center text-[1.2rem] md:text-[2rem] mt-2">Blockchain <span title="Total number of blocks in the blockchain">[{blockchain.blocks.length}]</span></h1>
+                <p className="text-center text-blue-200">Each block contains 5 transactions except for the <a className="text-yellow-400">Genesis Block</a>. To verify the block, the hash should start with three zeros &quot;000&quot; which means it&apos;s already been mined.</p>
+                <hr className="mt-2" />
                 <div className="overflow-y-scroll h-[500px]">
                     {
                         blockchain.blocks.map((block) =>  
                             <div key={block.GetHash() + new String(Math.random()*999999)} className="border border-dashed my-8">
                                 <div className="p-2">
-                                    <p>Block# {block.ID} {ValidBlock(block) ? <i title="This block is valid" className="fa-solid fa-check text-green-400"></i> : <i title="This block is not valid" className="fa-solid fa-link-slash text-orange-400"></i>}</p>
+                                    <p>Block# {block.ID} {ValidBlock(block) ? <i title="This block is valid" className="fa-solid fa-check text-green-400"></i> : <i title="Mining Block... this will take sometime" className="fa-solid fa-list-check text-orange-400 fa-fade"></i>}</p>
                                     <p className="truncate" title={block.GetPreviousHash()}>Previous Hash: {block.GetPreviousHash()}</p>
                                     <p className="truncate" title={block.GetHash()}>Current Hash: {block.GetHash()}</p>
                                 </div>
