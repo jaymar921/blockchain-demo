@@ -103,7 +103,7 @@ const SimulateCirculation = async (blockchain, limit = 10) => {
         saveBlockchain(blockchain)
         if(BlockchainLocked())
             LockBlockchain(false)
-    }, IsMobile()?3000:1000);
+    }, 1000);
 }
 
 
