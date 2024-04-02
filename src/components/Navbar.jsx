@@ -8,7 +8,6 @@ import { LockBlockchain } from "../utilities/datahandler";
 const Navbar = () => {
     const LoggedInAccount = useAccount();
     const [loaded, setLoaded] = useState(true);
-    console.log(LoggedInAccount)
     
     useEffect(()=> {
         LockBlockchain(true);
