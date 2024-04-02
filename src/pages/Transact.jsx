@@ -3,6 +3,7 @@ import useAccount from "../hooks/useAccount"
 import useUsers from "../hooks/useUsers";
 import { formatNumberToCurrency } from "../utilities/utility";
 import { SendRealCryptoCurrency } from "../utilities/cryptocurrency";
+import { Footer } from "../components";
 
 const Transact = () => {
     const LoggedInUser = useAccount();
@@ -105,6 +106,7 @@ const Transact = () => {
                     </form>
                 </div>
             </div>
+            <Footer className="absolute bottom-0 text-center"/>
         </div>
     )
 }
