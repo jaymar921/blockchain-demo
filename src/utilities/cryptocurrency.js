@@ -8,7 +8,7 @@ import { getRandomIntInclusive } from "./utility";
 
 export const InitializeBlockChain = async (start = false) => {
     if(start){
-        localStorage.clear()
+        localStorage.removeItem("_blockchain")
         console.log("Initializing Blockchain")
         await InitializeUsers();
         const blockchain = await loadBlockchain(2, 5);
@@ -17,12 +17,17 @@ export const InitializeBlockChain = async (start = false) => {
             // first transaction, we give 1000JHC Token to "Jaymar-JHC"
             const JaymarJHCWalletAddress = getAccountByUsername("jaymar921-JHC").WalletAddress;
             const transaction_1 = new Transaction(1000, "", JaymarJHCWalletAddress);
+            transaction_1.signature = "System Generated"
+            const MikaPikaChu921WalletAddress = getAccountByUsername("MikaPikaChu921").WalletAddress;
+            const transaction_2 = new Transaction(1000, "", MikaPikaChu921WalletAddress);
+            transaction_2.signature = "System Generated"
         
             await blockchain.addTransaction(transaction_1);
+            await blockchain.addTransaction(transaction_2);
         
-            console.log("simulate transactions")
         }
         
+        console.log("simulate transactions")
         await SimulateCirculation(blockchain, getAccountByUsername("jaymar921-JHC").WalletAddress, 1000)
     }
 }
@@ -49,21 +54,23 @@ const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 1
         // do transaction every second, circulate the balance
         let userWalletAddress = JaymarJHCWalletAddress;
         let user2WalletAddress = JaymarJHCWalletAddress;
-        if(Math.random() <= 0.6){
+        if(Math.random() <= 0.5){
             userWalletAddress = users[getRandomIntInclusive(0, users.length-1)].WalletAddress;
         }
-        if(Math.random() <= 0.6){
+        if(Math.random() <= 0.5){
             user2WalletAddress = users[getRandomIntInclusive(0, users.length-1)].WalletAddress;
         }
 
         if(userWalletAddress !== user2WalletAddress){
             let success = await SendCryptoCurrency(blockchain, userWalletAddress, user2WalletAddress, getRandomIntInclusive(1,50));
-            if(success) limit--;
+            if(success){ 
+                limit--;
+                // save block chain
+                saveBlockchain(blockchain)
+            }
             else return;
         }
 
-        // save block chain
-        saveBlockchain(blockchain)
     }, 2000);
 
 }

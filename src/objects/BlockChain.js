@@ -36,6 +36,15 @@ export class BlockChain{
         return this.blocks[this.blocks.length - 1];
     }
 
+    GetBlock(hash){
+        for(const block of this.blocks){
+            if(block.Hash === hash){
+                return block;
+            }
+        }
+        return undefined;
+    }
+
     async UpdateBlocks(){
         for(let i = this.blocks.length-1; i >= 0; i--){
             if(i > 0){
