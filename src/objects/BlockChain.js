@@ -1,3 +1,4 @@
+import { notifications } from "@mantine/notifications";
 import { Block } from "./Block";
 import { MineBlock } from "./MineBlock";
 import { Transaction } from "./Transaction";
@@ -12,12 +13,25 @@ export class BlockChain{
         this.tempTransactions = [];
         this.difficulty = 5;
         this.blockTransactionSize = 2;
+        this.isMining = false;
     }
 
     async AddGenesisBlock(){
+        if(this.isMining) return;
+        console.log(this.isMining)
+        this.isMining = true;
+        console.log("Add genesis")
         let genesisBlock = new Block(1)
         genesisBlock.SetPreviousHash("0000000000000000000000000000000000000000000000000000000000000000");
-        await MineBlock(genesisBlock, this.difficulty)
+        MineBlock(genesisBlock, this.difficulty).then(() => {
+            this.isMining = false;
+            if(!this.isMining){
+                notifications.show({
+                    title: "Mining Block [System]",
+                    message: `Block #${genesisBlock.ID} was mined`,
+                })
+            }
+        })
         this.blocks.push(genesisBlock);
     }
 
@@ -67,19 +81,34 @@ export class BlockChain{
     }
 
     async createBlock(){
+        if(this.isMining) return;
         const block = new Block();
         block.ID = this.blocks.length+1;
         for(const transaction of this.tempTransactions){
             block.AddTransaction(transaction);
         }
-        // get the last block hash
-        block.SetPreviousHash(this.GetLastBlock().GetHash());
-        // Mine the block
-        await MineBlock(block, this.difficulty);
-        // push the block into the blockchain
-        this.blocks.push(block);
         // clear the transactions
         this.tempTransactions = [];
+
+        // get the last block hash
+        block.SetPreviousHash(this.GetLastBlock().GetHash());
+        notifications.show({
+            title: "Mining Block [System]",
+            message: `Mining Block #${block.ID}`,
+        })
+        // Mine the block
+        this.isMining = true;
+        MineBlock(block, this.difficulty).then(()=>{
+            this.isMining = false;
+            if(!this.isMining){
+                notifications.show({
+                    title: "Mining Block [System]",
+                    message: `Block #${block.ID} was mined`,
+                })
+            }
+        })
+        // push the block into the blockchain
+        this.blocks.push(block);
     }
 
     getBalance(WalletAddress){

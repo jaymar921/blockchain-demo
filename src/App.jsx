@@ -2,21 +2,29 @@ import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 import { Home, Login, Register, Account as AccountPage, Blockchain } from './pages';
 import { Navbar } from './components';
 import "./App.css";
+import '@mantine/notifications/styles.css';
+import '@mantine/core/styles.css';
+import { MantineProvider } from '@mantine/core'
+import { Notifications } from '@mantine/notifications'
 
 const App = () => {
   return (
-    <main>
-        <Router>
-            <Navbar />
-            <Routes>
-                <Route path='/' element={<Home />}/>
-                <Route path='/login' element={<Login />}/>
-                <Route path='/register' element={<Register />}/>
-                <Route path='/account' element={<AccountPage />}/>
-                <Route path='/blockchain' element={<Blockchain />}/>
-            </Routes>
-        </Router>
-    </main>
+    
+    <MantineProvider defaultColorScheme='dark'>
+      <Notifications position="bottom-left" zIndex={1000} className="absolute max-w-[20px] w-[50px]" limit={10} autoClose={5000}/>
+      <main>
+            <Router>
+                <Navbar />
+                <Routes>
+                    <Route path='/' element={<Home />}/>
+                    <Route path='/login' element={<Login />}/>
+                    <Route path='/register' element={<Register />}/>
+                    <Route path='/account' element={<AccountPage />}/>
+                    <Route path='/blockchain' element={<Blockchain />}/>
+                </Routes>
+            </Router>
+      </main>
+    </MantineProvider>
   )
 }
 

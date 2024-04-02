@@ -1,9 +1,10 @@
+import { notifications } from "@mantine/notifications";
 import { Account } from "../classes/Account";
 import { BlockChain } from "../objects/BlockChain"
 import { sha256HashObject } from "../objects/Cryptography";
 import { Transaction } from "../objects/Transaction";
 import { User } from "../objects/User";
-import { getAccountByUsername, getAccountByWalletAddress, loadBlockchain, saveAccount, saveBlockchain } from "./datahandler";
+import { BlockchainLocked, LoadUsers, LockBlockchain, getAccountByUsername, getAccountByWalletAddress, loadBlockchain, saveAccount, saveBlockchain } from "./datahandler";
 import { getRandomIntInclusive } from "./utility";
 
 export const InitializeBlockChain = async (start = false) => {
@@ -11,24 +12,38 @@ export const InitializeBlockChain = async (start = false) => {
         localStorage.removeItem("_blockchain")
         console.log("Initializing Blockchain")
         await InitializeUsers();
-        const blockchain = await loadBlockchain(2, 5);
+        const blockchain = await loadBlockchain(4, 5, true);
         if(blockchain.GetLastBlock().ID === 1){
-
             // first transaction, we give 1000JHC Token to "Jaymar-JHC"
             const JaymarJHCWalletAddress = getAccountByUsername("jaymar921-JHC").WalletAddress;
-            const transaction_1 = new Transaction(1000, "", JaymarJHCWalletAddress);
+            const transaction_1 = new Transaction(5000, "", JaymarJHCWalletAddress);
             transaction_1.signature = "System Generated"
+            notifications.show({
+                title: "Transaction [System]",
+                message: `System sent 1000JHC to jaymar921-JHC [for circulation]`,
+                style: { width: '100'}
+            });
             const MikaPikaChu921WalletAddress = getAccountByUsername("MikaPikaChu921").WalletAddress;
-            const transaction_2 = new Transaction(1000, "", MikaPikaChu921WalletAddress);
+            const transaction_2 = new Transaction(5000, "", MikaPikaChu921WalletAddress);
             transaction_2.signature = "System Generated"
+            notifications.show({
+                title: "Transaction [System]",
+                message: `System sent 1000JHC to MikaPikaChu921 [for circulation]`,
+                style: { width: '100'}
+            });
         
             await blockchain.addTransaction(transaction_1);
             await blockchain.addTransaction(transaction_2);
-        
+            
+            saveBlockchain(blockchain)
+            LockBlockchain(false)
         }
         
         console.log("simulate transactions")
-        await SimulateCirculation(blockchain, getAccountByUsername("jaymar921-JHC").WalletAddress, 1000)
+        
+        
+        await SimulateCirculation(blockchain, getAccountByUsername("jaymar921-JHC").WalletAddress, 9999)
+        
     }
 }
 
@@ -38,7 +53,8 @@ export const InitializeBlockChain = async (start = false) => {
  * @param {String} JaymarJHCWalletAddress 
  */
 const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 10) => {
-    const users = await InitializeUsers(); // load users
+    const users = LoadUsers(); // load users
+    console.info("DOING SIMULATION")
     
     // circulation
     // await SendCryptoCurrency(blockchain, JaymarJHCWalletAddress, users[1].WalletAddress, 50);
@@ -62,17 +78,18 @@ const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 1
         }
 
         if(userWalletAddress !== user2WalletAddress){
-            let success = await SendCryptoCurrency(blockchain, userWalletAddress, user2WalletAddress, getRandomIntInclusive(1,50));
+            let success = await SendCryptoCurrency(blockchain, userWalletAddress, user2WalletAddress, getRandomIntInclusive(1,500));
             if(success){ 
                 limit--;
-                // save block chain
-                saveBlockchain(blockchain)
             }
             else return;
         }
 
+        // save block chain
+        saveBlockchain(blockchain)
+        if(BlockchainLocked())
+            LockBlockchain(false)
     }, 2000);
-
 }
 
 
@@ -125,6 +142,24 @@ export const InitializeUsers = async () => {
     const account_8 = new Account()
     account_8.construct(_userData_8, "ha-rold1999", await sha256HashObject("P@ssw0rd"));
 
+    // Dummy Account 9
+    const _userData_9 = new User("Alyssa");
+    await _userData_9.GenerateKeys();
+    const account_9 = new Account()
+    account_9.construct(_userData_9, "jumapaoA", await sha256HashObject("P@ssw0rd"));
+
+    // Dummy Account 10
+    const _userData_10 = new User("Ada Pauline");
+    await _userData_10.GenerateKeys();
+    const account_10 = new Account()
+    account_10.construct(_userData_10, "adavillacarlos", await sha256HashObject("P@ssw0rd"));
+
+    // Dummy Account 11
+    const _userData_11 = new User("Nathaniel");
+    await _userData_11.GenerateKeys();
+    const account_11 = new Account()
+    account_11.construct(_userData_11, "natnat1432", await sha256HashObject("P@ssw0rd"));
+
     // Save accounts
     saveAccount(account_1);
     saveAccount(account_2);
@@ -134,8 +169,10 @@ export const InitializeUsers = async () => {
     saveAccount(account_6);
     saveAccount(account_7);
     saveAccount(account_8);
+    saveAccount(account_9);
+    saveAccount(account_10);
+    saveAccount(account_11);
 
-    return [account_1, account_2, account_3, account_4, account_5, account_6, account_7, account_8]
 }
 
 /**
@@ -162,6 +199,10 @@ export const SendCryptoCurrency = async (blockchain, fromWalletAddress, toWallet
     await transaction.sign(sender.User.PrivateKey);
 
     console.log(`${sender.Username} sent ${amount}JHC to ${receiver.Username}`)
+    notifications.show({
+        title: "Transaction",
+        message: `${sender.Username} sent ${amount}JHC to ${receiver.Username}`,
+    });
 
     // add transaction to the blockchain
     await blockchain.addTransaction(transaction);

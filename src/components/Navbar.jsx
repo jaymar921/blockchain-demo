@@ -3,12 +3,14 @@ import { jh_logo } from "../assets"
 import useAccount from "../hooks/useAccount"
 import { useEffect, useState } from "react";
 import { InitializeBlockChain } from "../utilities/cryptocurrency";
+import { LockBlockchain } from "../utilities/datahandler";
 
 const Navbar = () => {
     const LoggedInAccount = useAccount();
     const [loaded, setLoaded] = useState(true);
     
     useEffect(()=> {
+        LockBlockchain(true);
         InitializeBlockChain(loaded)
         setLoaded(false);
     }, [])

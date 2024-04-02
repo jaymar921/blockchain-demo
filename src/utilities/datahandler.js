@@ -102,7 +102,11 @@ export const saveBlockchain = (blockchain) => {
  * 
  * @returns {BlockChain}
  */
-export const loadBlockchain = async (difficulty, blockTransactionSize, suppressLogs = false) => {
+export const loadBlockchain = async (difficulty, blockTransactionSize, forceLoad, suppressLogs = false) => {
+    if(BlockchainLocked() && !forceLoad){
+        console.log("Blockchain locked")
+        return undefined
+    }
     const blockchain = new BlockChain();
     if(!suppressLogs)
         console.log("Loading blockchain from localstorage")
@@ -113,6 +117,7 @@ export const loadBlockchain = async (difficulty, blockTransactionSize, suppressL
     blockchain.difficulty = difficulty ?? data.difficulty;
     blockchain.blockTransactionSize = blockTransactionSize ?? data.blockTransactionSize;
     blockchain.tempTransactions = [];
+    blockchain.isMining = data.isMining;
 
     if(!suppressLogs)
         console.log("copying blocks")
@@ -141,10 +146,38 @@ export const loadBlockchain = async (difficulty, blockTransactionSize, suppressL
         blockchain.tempTransactions.push(transaction);
     }
 
-    if(blockchain.blocks.length === 0)
+    if(blockchain.blocks.length === 0){
         await blockchain.AddGenesisBlock();
+    }
     
     if(!suppressLogs)
         console.log("blockchain loaded")
     return blockchain;
+}
+
+export const LoadUsers = () => {
+    let allUsers = [];
+
+    const accsArray = JSON.parse(localStorage.getItem("_accounts") ?? "[]");
+    if(!(accsArray instanceof Array)) return allUsers;
+
+    for(const account of accsArray){
+        allUsers.push(account);
+    }
+
+    return allUsers;
+}
+
+export const BlockchainLocked = () => {
+    return localStorage.getItem("_blockchainLOCK");
+}
+
+export const LockBlockchain = (lock) => {
+    if(lock){
+        console.info("Locking Blockchain")
+        localStorage.setItem("_blockchainLOCK", true)
+    }else{
+        console.info("Unlocking Blockchain")
+        localStorage.removeItem("_blockchainLOCK")
+    }
 }
