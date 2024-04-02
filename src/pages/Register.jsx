@@ -4,13 +4,15 @@ import { User } from "../objects/User";
 import { Account } from "../classes/Account";
 import { sha256HashObject } from "../objects/Cryptography";
 import { saveAccount } from "../utilities/datahandler";
+import { useNavigate } from "react-router-dom";
 const Register = () => {
+    const navigate = useNavigate()
     const [inputFields, setInputFields] = useState({fullname: "", username: "", password: ""});
     const [submitting, setSubmitting] = useState(false);
 
 
     const RedirectToLogin = () => {
-        window.location.href = "/login"
+        navigate("/login")
     }
 
     const updateField = (field, value) => {
@@ -45,7 +47,7 @@ const Register = () => {
 
         saveAccount(account)
         setSubmitting(false)
-        window.location.href = "/login";
+        navigate("/login")
     }
     return (
         <section className="relative flex w-[100%] max-container h-[100lvh]">

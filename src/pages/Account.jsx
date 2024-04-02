@@ -1,10 +1,22 @@
+import { useNavigate } from "react-router-dom";
 import { Footer } from "../components";
 import useAccount from "../hooks/useAccount"
 import { LogoutLocal } from "../utilities/accounthandler";
 import { formatNumberToCurrency } from "../utilities/utility";
 
 const Account = () => {
+    const navigate = useNavigate();
     const LoggedInAccount = useAccount()
+
+    const HandleLogout = () => {
+        LogoutLocal()
+        navigate("/")
+    }
+
+    if(!LoggedInAccount){
+        HandleLogout();
+        return;
+    }
 
     const Clipboard = async (item) => {
         let text_data = LoggedInAccount[item];
@@ -57,7 +69,7 @@ const Account = () => {
                     </div>
                 </div>
                 <div className="px-8 m-8 text-center">
-                    <button className="border w-1/2 p-1 rounded-lg hover:bg-slate-800" onClick={LogoutLocal}>Logout</button>
+                    <button className="border w-1/2 p-1 rounded-lg hover:bg-slate-800" onClick={HandleLogout}>Logout</button>
                 </div>
             </div>
             <Footer className="absolute text-center bottom-0" />

@@ -4,5 +4,4 @@ export const LoginLocal = (account) => {
 
 export const LogoutLocal = () => {
     localStorage.removeItem("_account_loggedIn");
-    window.location.href = "/"
 }

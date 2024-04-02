@@ -3,8 +3,10 @@ import { Footer } from "../components"
 import { sha256HashObject } from "../objects/Cryptography"
 import { getAccount } from "../utilities/datahandler"
 import { LoginLocal } from "../utilities/accounthandler"
+import { useNavigate } from "react-router-dom"
 
 const Login = () => {
+    const navigate = useNavigate();
     const [inputFields, setInputFields] = useState({username: "", password: ""})
 
     const updateField = (field, value) => {
@@ -35,11 +37,11 @@ const Login = () => {
         }
 
         LoginLocal(account);
-        window.location.href = "/"
+        navigate("/")
     }
 
     const RedirectToRegister = () => {
-        window.location.href = "/register"
+        navigate("/register")
     }
   return (
     <section className="relative flex w-[100%] max-container h-[100lvh]">

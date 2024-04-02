@@ -10,9 +10,8 @@ const useAccount = () => {
 
         account.User.WalletBalance = blockchain.getBalance(account.WalletAddress);
         setAccount(account);
-        
     }, [account, blockchain])
-    if(!account) return undefined;
+    if(!account || !JSON.parse(localStorage.getItem("_account_loggedIn"))) return undefined;
 
     return account;
 }

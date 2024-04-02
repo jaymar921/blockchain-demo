@@ -4,8 +4,10 @@ import useUsers from "../hooks/useUsers";
 import { formatNumberToCurrency } from "../utilities/utility";
 import { SendRealCryptoCurrency } from "../utilities/cryptocurrency";
 import { Footer } from "../components";
+import { useNavigate } from "react-router-dom";
 
 const Transact = () => {
+    const navigate = useNavigate();
     const LoggedInUser = useAccount();
     const AllUsers = useUsers();
     const [active, setActive] = useState("send");
@@ -43,7 +45,7 @@ const Transact = () => {
 
     useEffect(()=> {
         if(!LoggedInUser){
-            window.location.href = "/login"
+            navigate("/login")
         }
     })
     return (
