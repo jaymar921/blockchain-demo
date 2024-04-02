@@ -181,3 +181,26 @@ export const LockBlockchain = (lock) => {
         localStorage.removeItem("_blockchainLOCK")
     }
 }
+
+/**
+ * 
+ * @returns {Transaction | undefined}
+ */
+export const GetPendingTransaction = () => {
+    const json = localStorage.getItem("_pendingTransaction");
+    if(!json) return undefined;
+    const data = JSON.parse(json);
+
+    const transaction = new Transaction(data.amount, data.from, data.to);
+    transaction.timestamp = data.timestamp;
+    transaction.signature = data.signature;
+
+    localStorage.removeItem("_pendingTransaction")
+
+    return transaction;
+}
+
+
+export const SendPendingTransaction = (transaction) => {
+    localStorage.setItem("_pendingTransaction", JSON.stringify(transaction));
+}

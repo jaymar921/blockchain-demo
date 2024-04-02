@@ -1,10 +1,13 @@
+import { useEffect, useState } from "react";
 import { Footer } from "../components";
+import useAccount from "../hooks/useAccount";
 import useBlockchain from "../hooks/useBlockchain"
-import { Block } from "../objects/Block";
 import { getAccountByWalletAddress } from "../utilities/datahandler";
 
 const Blockchain = () => {
     const blockchain = useBlockchain();
+    const loggedInUser = useAccount();
+    const [userWalletAddress, setUserWalletAddress] = useState(undefined);
 
     /**
      * 
@@ -19,6 +22,12 @@ const Blockchain = () => {
             return false;
         return true;
     }
+
+    useEffect(()=> {
+        if(loggedInUser){
+            setUserWalletAddress(loggedInUser.WalletAddress)
+        }
+    }, [loggedInUser])
   return (
     <div className="relative flex lg:flex-row flex-col max-container h-[100%]">
         <div className="relative left-[50%] translate-x-[-50%] h-[100%] w-[95%] md:w-[550px] mt-[10lvh] font-minecraft overflow-hidden">
@@ -38,7 +47,7 @@ const Blockchain = () => {
                             </thead>
                             <tbody>
                             {blockchain.tempTransactions.map((tr) => 
-                                <tr key={tr.timestamp + new String(Math.random()*999999)} className="text-center text-[0.8rem] md:text-[1rem]">
+                                <tr key={tr.timestamp + new String(Math.random()*999999)} className={`text-center text-[0.8rem] md:text-[1rem] ${(userWalletAddress === tr.from || userWalletAddress === tr.to) && "text-yellow-200"} `}>
                                     <td>{tr.amount} JHC</td>
                                     <td className="truncate" title={tr.from}>{getAccountByWalletAddress(tr.from)?.Username ?? "System"}</td>
                                     <td className="truncate" title={tr.to}>{getAccountByWalletAddress(tr.to)?.Username ?? "System"}</td>
@@ -74,7 +83,7 @@ const Blockchain = () => {
                                         </thead>
                                         <tbody>
                                             {block.GetTransactions().map((tr) => 
-                                                <tr key={tr.timestamp + new String(Math.random()*999999)} className="text-center text-[0.8rem] md:text-[1rem]">
+                                                <tr key={tr.timestamp + new String(Math.random()*999999)} className={`text-center text-[0.8rem] md:text-[1rem] ${(userWalletAddress === tr.from || userWalletAddress === tr.to) && "text-yellow-200"} `}>
                                                     <td>{tr.amount} JHC</td>
                                                     <td className="truncate" title={tr.from}>{getAccountByWalletAddress(tr.from)?.Username ?? "System"}</td>
                                                     <td className="truncate" title={tr.to}>{getAccountByWalletAddress(tr.to)?.Username ?? "System"}</td>

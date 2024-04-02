@@ -4,7 +4,7 @@ import { BlockChain } from "../objects/BlockChain"
 import { sha256HashObject } from "../objects/Cryptography";
 import { Transaction } from "../objects/Transaction";
 import { User } from "../objects/User";
-import { BlockchainLocked, LoadUsers, LockBlockchain, getAccountByUsername, getAccountByWalletAddress, loadBlockchain, saveAccount, saveBlockchain } from "./datahandler";
+import { BlockchainLocked, GetPendingTransaction, LoadUsers, LockBlockchain, SendPendingTransaction, getAccountByUsername, getAccountByWalletAddress, loadBlockchain, saveAccount, saveBlockchain } from "./datahandler";
 import { getRandomIntInclusive } from "./utility";
 
 export const InitializeBlockChain = async (start = false) => {
@@ -42,7 +42,7 @@ export const InitializeBlockChain = async (start = false) => {
         console.log("simulate transactions")
         
         
-        await SimulateCirculation(blockchain, getAccountByUsername("jaymar921-JHC").WalletAddress, 9999)
+        await SimulateCirculation(blockchain, 9999)
         
     }
 }
@@ -50,9 +50,8 @@ export const InitializeBlockChain = async (start = false) => {
 /**
  * 
  * @param {BlockChain} blockchain 
- * @param {String} JaymarJHCWalletAddress 
  */
-const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 10) => {
+const SimulateCirculation = async (blockchain, limit = 10) => {
     const users = LoadUsers(); // load users
     const loggedInUser = JSON.parse(localStorage.getItem("_account_loggedIn"));
     console.info("DOING SIMULATION")
@@ -77,9 +76,20 @@ const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 1
             return;
         }
 
-        // 30% chance to receive money from unknown user (maybe they sent by mistake?)
-        if(loggedInUser && loggedInUser.WalletAddress === user2WalletAddress && Math.random() > 0.7){
+        // 10% chance to receive money from unknown user (maybe they sent by mistake?)
+        if(loggedInUser && loggedInUser.WalletAddress === user2WalletAddress && Math.random() > 0.9){
             return;
+        }
+
+        // priority pending transaction
+        const pendingTransaction = GetPendingTransaction();
+        if(pendingTransaction){
+            let success = await SendCryptoCurrency(blockchain, pendingTransaction.from, pendingTransaction.to, pendingTransaction.amount, true);
+            if(success){ 
+                limit--;
+            }else{
+                return;
+            }
         }
 
         if(userWalletAddress !== user2WalletAddress){
@@ -233,6 +243,23 @@ export const SendCryptoCurrency = async (blockchain, fromWalletAddress, toWallet
     }
 
     // add transaction to the blockchain
+    if(showWarning){
+        console.log(transaction)
+    }
     await blockchain.addTransaction(transaction);
     return true;
+}
+
+/**
+ * 
+ * @param {BlockChain} blockchain 
+ * @param {Transaction} transaction 
+ * @returns 
+ */
+export const SendRealCryptoCurrency = async (from, to, amount) => {
+    
+    const sender = getAccountByWalletAddress(from);
+    const transaction = new Transaction(amount, from, to);
+    await transaction.sign(sender.User.PrivateKey);
+    SendPendingTransaction(transaction);
 }
