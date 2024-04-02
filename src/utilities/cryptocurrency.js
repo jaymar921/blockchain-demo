@@ -54,6 +54,7 @@ export const InitializeBlockChain = async (start = false) => {
  */
 const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 10) => {
     const users = LoadUsers(); // load users
+    const loggedInUser = JSON.parse(localStorage.getItem("_account_loggedIn"));
     console.info("DOING SIMULATION")
     
     // circulation
@@ -68,13 +69,17 @@ const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 1
             return;
         }
         // do transaction every second, circulate the balance
-        let userWalletAddress = JaymarJHCWalletAddress;
-        let user2WalletAddress = JaymarJHCWalletAddress;
-        if(Math.random() <= 0.5){
-            userWalletAddress = users[getRandomIntInclusive(0, users.length-1)].WalletAddress;
+        let userWalletAddress = users[getRandomIntInclusive(0, users.length-1)].WalletAddress;
+        let user2WalletAddress = users[getRandomIntInclusive(0, users.length-1)].WalletAddress;
+
+        // If you're the logged in user, we should let you send money by your own
+        if(loggedInUser && loggedInUser.WalletAddress === userWalletAddress){
+            return;
         }
-        if(Math.random() <= 0.5){
-            user2WalletAddress = users[getRandomIntInclusive(0, users.length-1)].WalletAddress;
+
+        // 30% chance to receive money from unknown user (maybe they sent by mistake?)
+        if(loggedInUser && loggedInUser.WalletAddress === user2WalletAddress && Math.random() > 0.7){
+            return;
         }
 
         if(userWalletAddress !== user2WalletAddress){
@@ -89,7 +94,7 @@ const SimulateCirculation = async (blockchain, JaymarJHCWalletAddress, limit = 1
         saveBlockchain(blockchain)
         if(BlockchainLocked())
             LockBlockchain(false)
-    }, 2000);
+    }, 1000);
 }
 
 
@@ -184,6 +189,7 @@ export const InitializeUsers = async () => {
  */
 export const SendCryptoCurrency = async (blockchain, fromWalletAddress, toWalletAddress, amount, showWarning = false) => {
     let senderBalance = blockchain.getBalance(fromWalletAddress);
+    const loggedInUser = JSON.parse(localStorage.getItem("_account_loggedIn"));
 
     if(senderBalance <= amount){
         if(showWarning)
@@ -198,11 +204,33 @@ export const SendCryptoCurrency = async (blockchain, fromWalletAddress, toWallet
     const transaction = new Transaction(amount, fromWalletAddress, toWalletAddress);
     await transaction.sign(sender.User.PrivateKey);
 
-    console.log(`${sender.Username} sent ${amount}JHC to ${receiver.Username}`)
-    notifications.show({
-        title: "Transaction",
-        message: `${sender.Username} sent ${amount}JHC to ${receiver.Username}`,
-    });
+    if(loggedInUser){
+        if(loggedInUser.WalletAddress === sender.WalletAddress){
+            
+            notifications.show({
+                title: "Transaction",
+                message: `You sent ${amount}JHC to ${receiver.Username}`,
+                color: 'red',
+            });
+        }else if(loggedInUser.WalletAddress === receiver.WalletAddress){
+            notifications.show({
+                title: "Transaction",
+                message: `You received ${amount}JHC from ${sender.Username}`,
+                color: 'red',
+            });
+        }else{
+            notifications.show({
+                title: "Transaction",
+                message: `${sender.Username} sent ${amount}JHC to ${receiver.Username}`,
+            }); 
+        }
+    }else{
+        
+        notifications.show({
+            title: "Transaction",
+            message: `${sender.Username} sent ${amount}JHC to ${receiver.Username}`,
+        });
+    }
 
     // add transaction to the blockchain
     await blockchain.addTransaction(transaction);

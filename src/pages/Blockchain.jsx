@@ -42,7 +42,7 @@ const Blockchain = () => {
                                     <td>{tr.amount} JHC</td>
                                     <td className="truncate" title={tr.from}>{getAccountByWalletAddress(tr.from)?.Username ?? "System"}</td>
                                     <td className="truncate" title={tr.to}>{getAccountByWalletAddress(tr.to)?.Username ?? "System"}</td>
-                                    <td>{new Date(tr.timestamp).toLocaleDateString()}</td>
+                                    <td title={new Date(tr.timestamp).toLocaleTimeString()}>{new Date(tr.timestamp).toLocaleDateString()}</td>
                                     <td title={`Signature: ${tr.signature}`}><i className="fa-solid fa-lock text-green-400"></i></td>
                                 </tr>)
                             }
@@ -78,7 +78,7 @@ const Blockchain = () => {
                                                     <td>{tr.amount} JHC</td>
                                                     <td className="truncate" title={tr.from}>{getAccountByWalletAddress(tr.from)?.Username ?? "System"}</td>
                                                     <td className="truncate" title={tr.to}>{getAccountByWalletAddress(tr.to)?.Username ?? "System"}</td>
-                                                    <td>{new Date(tr.timestamp).toLocaleDateString()}</td>
+                                                    <td title={new Date(tr.timestamp).toLocaleTimeString()}>{new Date(tr.timestamp).toLocaleDateString()}</td>
                                                     <td title={`Signature: ${tr.signature}`}><i className="fa-solid fa-lock text-green-400"></i></td>
                                                 </tr>    
                                             )}
