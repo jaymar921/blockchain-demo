@@ -1,10 +1,20 @@
 import { NavLink } from "react-router-dom"
 import { jh_logo } from "../assets"
 import useAccount from "../hooks/useAccount"
+import { useEffect } from "react";
+import { InitializeBlockChain } from "../utilities/cryptocurrency";
 
 const Navbar = () => {
     const LoggedInAccount = useAccount();
-    console.log(LoggedInAccount)
+    
+    useEffect(()=> {
+        (async()=>{
+            setTimeout(async ()=>{
+                console.log("loading")
+                await InitializeBlockChain()
+            }, 300)
+        })();
+    }, [])
     return (
         <header className="flex justify-between items-center sm:px-16 px-8 py-4 max-w-5xl mx-auto absolute top-0 bg-transparent z-10 right-0 left-0">
             <NavLink to="/" className="w-12 h-12 bg-transparent flex items-center justify-center flex-bold shadow-md border-[1px] p-1 rounded-lg border-cyan-500"><img src={jh_logo}/></NavLink>

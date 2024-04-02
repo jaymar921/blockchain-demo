@@ -1,4 +1,7 @@
 import { Account } from "../classes/Account";
+import { Block } from "../objects/Block";
+import { BlockChain } from "../objects/BlockChain";
+import { Transaction } from "../objects/Transaction";
 
 /**
  * 
@@ -85,4 +88,63 @@ export const getAccountByWalletAddress = (WalletAddress) => {
     }
 
     return _userAccount;
+}
+
+/**
+ * 
+ * @param {BlockChain} blockchain 
+ */
+export const saveBlockchain = (blockchain) => {
+    localStorage.setItem("_blockchain", JSON.stringify(blockchain));
+}
+
+/**
+ * 
+ * @returns {BlockChain}
+ */
+export const loadBlockchain = async (difficulty, blockTransactionSize, suppressLogs = false) => {
+    const blockchain = new BlockChain();
+    if(!suppressLogs)
+        console.log("Loading blockchain from localstorage")
+    const data = JSON.parse(localStorage.getItem("_blockchain") ?? JSON.stringify(blockchain));
+    
+    if(!suppressLogs)
+        console.log("copying data")
+    blockchain.difficulty = difficulty ?? data.difficulty;
+    blockchain.blockTransactionSize = blockTransactionSize ?? data.blockTransactionSize;
+    blockchain.tempTransactions = [];
+
+    if(!suppressLogs)
+        console.log("copying blocks")
+    for(const block of data.blocks){
+        const bk = new Block();
+        bk.ID = block.ID;
+        bk.Nonce = block.Nonce;
+        bk.Hash = block.Hash;
+        bk.PreviousHash = block.PreviousHash;
+
+        for(const tr of block.Transactions){
+            const transaction = new Transaction(tr.amount, tr.from, tr.to);
+            transaction.timestamp = tr.timestamp;
+            transaction.signature = tr.signature;
+            bk.AddTransaction(transaction);
+        }
+        blockchain.blocks.push(bk);
+    }
+
+    if(!suppressLogs)
+        console.log("copying transactions")
+    for(const tran of data.tempTransactions){
+        const transaction = new Transaction(tran.amount, tran.from, tran.to);
+        transaction.timestamp = tran.timestamp;
+        transaction.signature = tran.signature;
+        blockchain.tempTransactions.push(transaction);
+    }
+
+    if(blockchain.blocks.length === 0)
+        await blockchain.AddGenesisBlock();
+    
+    if(!suppressLogs)
+        console.log("blockchain loaded")
+    return blockchain;
 }

@@ -49,9 +49,9 @@ const Login = () => {
                 <form>
                     <h2 className="text-center text-[30px] font-bold mb-4">Login</h2>
                     <label className="w-[100%]">Username</label>
-                    <input className="w-[100%] p-2 rounded-md outline-none bg-transparent border border-slate-500 my-2" type="text" placeholder="Username" value={inputFields.username} onInput={(e) => updateField("username", e.target.value)}/>
+                    <input className="w-[100%] p-2 rounded-md outline-none bg-transparent border border-slate-500 my-2" autoComplete="username" type="text" placeholder="Username" value={inputFields.username} onInput={(e) => updateField("username", e.target.value)}/>
                     <label className="w-[100%]">Password</label>
-                    <input className="w-[100%] p-2 rounded-md outline-none bg-transparent border border-slate-500 my-2" type="password" placeholder="Password" value={inputFields.password} onInput={(e) => updateField("password", e.target.value)}/>
+                    <input className="w-[100%] p-2 rounded-md outline-none bg-transparent border border-slate-500 my-2" autoComplete="current-password" type="password" placeholder="Password" value={inputFields.password} onInput={(e) => updateField("password", e.target.value)}/>
                     <div className="grid grid-cols-2 gap-4">
                     <button type="button" className="border w-100 p-1 rounded-lg col-span-1 hover:bg-slate-800" onClick={handleLogin}>Login</button>
                     <button type="button" className="border w-100 p-1 rounded-lg col-span-1 hover:bg-slate-800" onClick={RedirectToRegister}>Signup</button>
