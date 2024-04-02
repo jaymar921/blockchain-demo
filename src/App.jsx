@@ -11,7 +11,7 @@ const App = () => {
   return (
     
     <MantineProvider defaultColorScheme='dark'>
-      <Notifications position="bottom-left" zIndex={1000} className="absolute max-w-[20px] w-[50px]" limit={5} autoClose={5000}/>
+      <Notifications position="bottom-left" zIndex={1000} className="absolute font-minecraft text-[0.7rem]" limit={5} autoClose={5000}/>
       <main>
             <Router>
                 <Navbar />
