@@ -37,6 +37,13 @@ const Transact = () => {
     const handleRequestCrypto = async () => {
         if(selectedUser === "") return;
 
+        const totalCirculation = 10000;
+        if(amount+parseFloat(LoggedInUser?.User?.WalletBalance) > totalCirculation){
+            setAmount(totalCirculation - parseFloat(LoggedInUser?.User?.WalletBalance));
+            alert("Request amount coudn't be more than 10,000 JHC (Total Tokens in Circulation)")
+            return;
+        }
+
         await SendRealCryptoCurrency(selectedUser, LoggedInUser.WalletAddress, amount);
         setAmount(0)
         setSelectedUser("")
