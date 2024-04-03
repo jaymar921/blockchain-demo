@@ -7,15 +7,17 @@ import '@mantine/core/styles.css';
 import { MantineProvider } from '@mantine/core'
 import { Notifications } from '@mantine/notifications'
 import { IsMobile } from "./utilities/utility";
+import { useState } from "react";
 
 const App = () => {
+  const [showNotification, setShowNotification] = useState(true);
   return (
     
     <MantineProvider defaultColorScheme='dark'>
-      <Notifications position={IsMobile()?"top-center": "bottom-left"} zIndex={1000} className="absolute font-minecraft text-[0.7rem]" limit={IsMobile()?2:4} autoClose={IsMobile()?1000:5000}/>
+      <Notifications position={IsMobile()?"top-center": "bottom-left"} zIndex={1000} className="absolute font-minecraft text-[0.7rem]" display={showNotification?"block":"none"} limit={IsMobile()?2:4} autoClose={IsMobile()?1000:5000}/>
       <main>
             <Router>
-                <Navbar />
+                <Navbar showNotifications={setShowNotification} />
                 <Routes>
                     <Route path='/' element={<Home />}/>
                     <Route path='/login' element={<Login />}/>
