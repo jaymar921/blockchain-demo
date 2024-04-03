@@ -17,7 +17,7 @@ export const InitializeBlockChain = async (start = false) => {
         localStorage.removeItem("_blockchain")
         console.log("Initializing Blockchain")
         await InitializeUsers();
-        const blockchain = await loadBlockchain(IsMobile()?2:4, 5, true);
+        const blockchain = await loadBlockchain(IsMobile()?2:3, 5, true);
         if(blockchain.GetLastBlock().ID === 1){
             // first transaction, we give 1000JHC Token to "Jaymar-JHC"
             const JaymarJHCWalletAddress = getAccountByUsername("jaymar921-JHC").WalletAddress;

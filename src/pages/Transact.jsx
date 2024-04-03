@@ -17,15 +17,16 @@ const Transact = () => {
     const [amount, setAmount] = useState(0);
 
     const handleAmountChange = (value, send = false) => {
+        if(value==="") value = 0;
         if(LoggedInUser.User.WalletBalance < value && send){
-            setAmount(value)
+            setAmount(parseFloat(value))
             setTimeout(()=>{
                 alert("Amount should not be greater than Wallet Balance");
                 setAmount(LoggedInUser.User.WalletBalance)
             }, 200)
             return;
         }
-        setAmount(value)
+        setAmount(parseFloat(value))
     }
 
     const handleSendCrypto = async () => {
@@ -56,7 +57,7 @@ const Transact = () => {
         }
 
         const totalCirculation = 10000;
-        if(amount+parseFloat(LoggedInUser?.User?.WalletBalance) > totalCirculation){
+        if((parseFloat(amount)+parseFloat(LoggedInUser?.User?.WalletBalance)) > totalCirculation){
             setAmount(totalCirculation - parseFloat(LoggedInUser?.User?.WalletBalance));
             alert("Request amount coudn't be more than 10,000 JHC (Total Tokens in Circulation)")
             return;
@@ -103,7 +104,7 @@ const Transact = () => {
                                     <input className="relative w-[100%] p-2 bg-transparent border-2 outline-none border-slate-600" type="number" value={amount} onInput={(e)=> handleAmountChange(e.target.value, true)}/>
                                 </div>
                                 <div className="w-100 text-center place-items-center">
-                                    <button className="w-1/2 border-2 mt-4" type="button" onClick={handleSendCrypto} disabled={hasPendingTransaction}>Send</button>
+                                    <button className={`w-1/2 border-2 mt-4 ${hasPendingTransaction && "bg-slate-600"}`} type="button" onClick={handleSendCrypto} disabled={hasPendingTransaction}>Send</button>
                                 </div>
                             </>
                         }
@@ -127,7 +128,7 @@ const Transact = () => {
                                     <input className="relative w-[100%] p-2 bg-transparent border-2 outline-none border-slate-600" type="number" value={amount} onInput={(e)=> handleAmountChange(e.target.value, false)}/>
                                 </div>
                                 <div className="w-100 text-center place-items-center">
-                                    <button className="w-1/2 border-2 mt-4" type="button" onClick={handleRequestCrypto} disabled={hasPendingTransaction}>Request</button>
+                                    <button className={`w-1/2 border-2 mt-4 ${hasPendingTransaction && "bg-slate-600"}`} type="button" onClick={handleRequestCrypto} disabled={hasPendingTransaction}>Request</button>
                                 </div>
                             </>
                         }

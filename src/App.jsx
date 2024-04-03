@@ -14,7 +14,7 @@ const App = () => {
   return (
     
     <MantineProvider defaultColorScheme='dark'>
-      <Notifications position={IsMobile()?"top-center": "bottom-left"} zIndex={1000} className="absolute font-minecraft text-[0.7rem]" display={showNotification?"block":"none"} limit={IsMobile()?2:4} autoClose={IsMobile()?1000:5000}/>
+      <Notifications position={IsMobile()?"top-center": "bottom-left"} zIndex={1000} className="absolute font-minecraft text-[0.7rem]" display={showNotification?"block":"none"} limit={IsMobile()?2:4} autoClose={IsMobile()?1000:3000}/>
       <main>
             <Router>
                 <Navbar showNotifications={setShowNotification} />

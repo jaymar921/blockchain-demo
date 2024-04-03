@@ -8,7 +8,7 @@ const useBlockchain = () => {
     
     useEffect(()=>{
         const intervalId = setInterval(async ()=> {
-            const blockchaindata = await loadBlockchain(IsMobile()?2:4, 5, false, true);
+            const blockchaindata = await loadBlockchain(IsMobile()?2:3, 5, false, true);
             if(blockchaindata)
                 setBlockchain(blockchaindata)
         }, 500)
