@@ -156,17 +156,17 @@ export class BlockChain{
         this.blocks.forEach(block => {
             block.GetTransactions().forEach(transaction => {
                 if(transaction.to === WalletAddress){
-                    balance += transaction.amount;
+                    balance += parseFloat(transaction.amount);
                 }else if(transaction.from === WalletAddress){
-                    balance -= transaction.amount;
+                    balance -= parseFloat(transaction.amount);
                 }
             })
         })
         this.tempTransactions.forEach(transaction => {
             if(transaction.to === WalletAddress){
-                balance += transaction.amount;
+                balance += parseFloat(transaction.amount);
             }else if(transaction.from === WalletAddress){
-                balance -= transaction.amount;
+                balance -= parseFloat(transaction.amount);
             }
         })
         return balance;
