@@ -75,8 +75,8 @@ const SimulateCirculation = async (blockchain, limit = 10) => {
             return;
         }
 
-        // 10% chance to receive money from unknown user (maybe they sent by mistake?)
-        if(loggedInUser && loggedInUser.WalletAddress === user2WalletAddress && Math.random() > 0.9){
+        // 1% chance to receive money from unknown user (maybe they sent by mistake?)
+        if(loggedInUser && loggedInUser.WalletAddress === user2WalletAddress && Math.random() > 0.99){
             return;
         }
 
