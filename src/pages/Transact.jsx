@@ -90,9 +90,10 @@ const Transact = () => {
                                         {
                                             AllUsers.map((user) => {
                                                 if(user.WalletAddress !== LoggedInUser.WalletAddress)
-                                                    return <option key={user.WalletAddress} value={user.WalletAddress}>{user.Username} ({user.WalletAddress})</option>
+                                                    return <option key={user.WalletAddress} value={user.WalletAddress}>{user.Username}</option>
                                             })
                                         }
+                                        <option value={"anyone"}>Anyone</option>
                                         <option value={""} disabled>-</option>
                                     </select>
                                 </div>
