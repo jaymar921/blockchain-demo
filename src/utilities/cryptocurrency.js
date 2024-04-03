@@ -8,6 +8,11 @@ import { IsMobile, getRandomIntInclusive } from "./utility";
 
 export const InitializeBlockChain = async (start = false) => {
     if(start){
+        notifications.show({
+            title: "System",
+            message: `Initializing Blockchain`,
+            color: 'green',
+        });
         localStorage.removeItem("_blockchain")
         console.log("Initializing Blockchain")
         await InitializeUsers();
@@ -39,7 +44,7 @@ export const InitializeBlockChain = async (start = false) => {
         }
         
         console.log("simulate transactions")
-        
+        await blockchain.RunAutoMiner();
         
         await SimulateCirculation(blockchain, 9999)
         
@@ -103,7 +108,7 @@ const SimulateCirculation = async (blockchain, limit = 10) => {
         saveBlockchain(blockchain)
         if(BlockchainLocked())
             LockBlockchain(false)
-    }, 1000);
+    }, 1300);
 }
 
 
