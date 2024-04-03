@@ -28,6 +28,10 @@ const Transact = () => {
 
     const handleSendCrypto = async () => {
         if(selectedUser === "") return;
+        if(amount <= 0){
+            alert("Send amount should be greater than 0")
+            return;
+        }
 
         await SendRealCryptoCurrency(LoggedInUser.WalletAddress, selectedUser, amount);
         setAmount(0)
@@ -36,6 +40,10 @@ const Transact = () => {
 
     const handleRequestCrypto = async () => {
         if(selectedUser === "") return;
+        if(amount <= 0){
+            alert("Request amount should be greater than 0")
+            return;
+        }
 
         const totalCirculation = 10000;
         if(amount+parseFloat(LoggedInUser?.User?.WalletBalance) > totalCirculation){
