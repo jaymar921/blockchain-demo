@@ -208,7 +208,7 @@ export const SendCryptoCurrency = async (blockchain, fromWalletAddress, toWallet
     let senderBalance = blockchain.getBalance(fromWalletAddress);
     const loggedInUser = JSON.parse(localStorage.getItem("_account_loggedIn"));
     if(senderBalance < amount){
-        if(waitTillFilled && fromWalletAddress !== toWalletAddress && loggedInUser){
+        if(waitTillFilled && loggedInUser){
             if(senderBalance > 0){
                 const newRequest = amount - senderBalance;
                 amount = senderBalance;
@@ -266,7 +266,7 @@ export const SendCryptoCurrency = async (blockchain, fromWalletAddress, toWallet
 
     // add transaction to the blockchain
     if(showWarning){
-        console.log(transaction)
+        //console.log(transaction)
     }
     await blockchain.addTransaction(transaction);
     return true;
