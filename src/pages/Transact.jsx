@@ -5,11 +5,13 @@ import { formatNumberToCurrency } from "../utilities/utility";
 import { SendRealCryptoCurrency } from "../utilities/cryptocurrency";
 import { Footer } from "../components";
 import { useNavigate } from "react-router-dom";
+import useHasPendingTransaction from "../hooks/useHasPendingTransaction";
 
 const Transact = () => {
     const navigate = useNavigate();
     const LoggedInUser = useAccount();
     const AllUsers = useUsers();
+    const hasPendingTransaction = useHasPendingTransaction();
     const [active, setActive] = useState("send");
     const [selectedUser, setSelectedUser] = useState("");
     const [amount, setAmount] = useState(0);
@@ -32,6 +34,10 @@ const Transact = () => {
             alert("Send amount should be greater than 0")
             return;
         }
+        if(hasPendingTransaction){
+            alert("You have pending transaction")
+            return;
+        }
 
         await SendRealCryptoCurrency(LoggedInUser.WalletAddress, selectedUser, amount);
         setAmount(0)
@@ -42,6 +48,10 @@ const Transact = () => {
         if(selectedUser === "") return;
         if(amount <= 0){
             alert("Request amount should be greater than 0")
+            return;
+        }
+        if(hasPendingTransaction){
+            alert("You have pending transaction")
             return;
         }
 
@@ -93,7 +103,7 @@ const Transact = () => {
                                     <input className="relative w-[100%] p-2 bg-transparent border-2 outline-none border-slate-600" type="number" value={amount} onInput={(e)=> handleAmountChange(e.target.value, true)}/>
                                 </div>
                                 <div className="w-100 text-center place-items-center">
-                                    <button className="w-1/2 border-2 mt-4" type="button" onClick={handleSendCrypto}>Send</button>
+                                    <button className="w-1/2 border-2 mt-4" type="button" onClick={handleSendCrypto} disabled={hasPendingTransaction}>Send</button>
                                 </div>
                             </>
                         }
@@ -117,7 +127,7 @@ const Transact = () => {
                                     <input className="relative w-[100%] p-2 bg-transparent border-2 outline-none border-slate-600" type="number" value={amount} onInput={(e)=> handleAmountChange(e.target.value, false)}/>
                                 </div>
                                 <div className="w-100 text-center place-items-center">
-                                    <button className="w-1/2 border-2 mt-4" type="button" onClick={handleRequestCrypto}>Request</button>
+                                    <button className="w-1/2 border-2 mt-4" type="button" onClick={handleRequestCrypto} disabled={hasPendingTransaction}>Request</button>
                                 </div>
                             </>
                         }
