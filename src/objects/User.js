@@ -1,12 +1,13 @@
 import { GenerateKey, sha256HashObject } from "./Cryptography";
 
 export class User{
-    constructor(fullname){
+    constructor(fullname, fiatBalance = 1000){
         this.Fullname = fullname;
         this.WalletBalance = 0;
         this.WalletAddress = undefined;
         this.PrivateKey = undefined;
         this.PublicKey = undefined;
+        this.FiatBalance = fiatBalance
 
         // Generate Keys asynchronously
         this.GenerateKeys();

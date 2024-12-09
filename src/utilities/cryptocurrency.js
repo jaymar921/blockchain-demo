@@ -182,6 +182,24 @@ export const InitializeUsers = async () => {
     const account_11 = new Account()
     account_11.construct(_userData_11, "natnat1432", await sha256HashObject("P@ssw0rd"));
 
+    // Dummy Account 12 (smart money)
+    const _userData_12 = new User("BDO Bank", 200_000);
+    await _userData_12.GenerateKeys();
+    const account_12 = new Account()
+    account_12.construct(_userData_12, "bdo123", await sha256HashObject("P@ssw0rd"));
+
+    // Dummy Account 13 (smart money)
+    const _userData_13 = new User("BPI Bank", 200_000);
+    await _userData_13.GenerateKeys();
+    const account_13 = new Account()
+    account_13.construct(_userData_13, "bpi123", await sha256HashObject("P@ssw0rd"));
+
+    // Dummy Account 14 (smart money)
+    const _userData_14 = new User("PNB Bank", 200_000);
+    await _userData_14.GenerateKeys();
+    const account_14= new Account()
+    account_14.construct(_userData_14, "pnb123", await sha256HashObject("P@ssw0rd"));
+
     // Save accounts
     saveAccount(account_1);
     saveAccount(account_2);
@@ -194,6 +212,9 @@ export const InitializeUsers = async () => {
     saveAccount(account_9);
     saveAccount(account_10);
     saveAccount(account_11);
+    saveAccount(account_12);
+    saveAccount(account_13);
+    saveAccount(account_14);
 
 }
 
