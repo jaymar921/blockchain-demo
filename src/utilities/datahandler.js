@@ -100,7 +100,7 @@ export const saveBlockchain = (blockchain) => {
 
 /**
  * 
- * @returns {BlockChain}
+ * @returns {Promise<BlockChain>}
  */
 export const loadBlockchain = async (difficulty, blockTransactionSize, forceLoad, suppressLogs = false) => {
     if(BlockchainLocked() && !forceLoad){

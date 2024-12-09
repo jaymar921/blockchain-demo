@@ -11,7 +11,7 @@ const useBlockchain = () => {
             const blockchaindata = await loadBlockchain(IsMobile()?2:3, 5, false, true);
             if(blockchaindata)
                 setBlockchain(blockchaindata)
-        }, 500)
+        }, 1000)
         return () => {clearInterval(intervalId)};
     }, [])
 
